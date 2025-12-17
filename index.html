@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F7SWL0VP8V"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-F7SWL0VP8V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Drink Plan Calc | Free Party Alcohol & Budget Calculator</title>
+    <meta name="description" content="Free wedding and party alcohol calculator. Plan exactly how much beer, wine, and liquor to buy. Includes budget estimator and mixer ratios.">
+    <meta name="keywords" content="drink plan calc, wedding alcohol calculator, party drink planner, alcohol budget calculator, how much booze for 50 guests, liquor stock calculator">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Drink Plan Calc - Plan Your Party Bar">
+    <meta property="og:description" content="Don't run out of drinks! Calculate bottles, mixers, and budget for your next event in seconds.">
+    <meta property="og:url" content="https://www.drinkplancalc.com/">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a; /* Slate 900 */
+            --card-bg: #1e293b; /* Slate 800 */
+            --text-main: #f1f5f9; /* Slate 100 */
+            --text-muted: #94a3b8; /* Slate 400 */
+            --accent: #3b82f6; /* Blue 500 */
+            --success: #10b981; /* Emerald 500 */
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3 { margin: 0; font-weight: 700; }
+        h1 { font-size: 1.8rem; text-align: center; margin-bottom: 20px; color: var(--text-main); }
+        h2 { font-size: 1.2rem; margin-bottom: 10px; }
+        
+        /* Utility Classes */
+        .w-full { width: 100%; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .text-center { text-align: center; }
+        .hidden { display: none; }
+        .text-small { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Inputs */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        label { display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
+        
+        input[type="number"] {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+            accent-color: var(--accent);
+        }
+
+        /* Toggles */
+        .toggle-group {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(3, 1fr);
+            margin-bottom: 10px;
+        }
+        
+        .toggle-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Checkboxes */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .checkbox-item input { margin-right: 10px; accent-color: var(--accent); transform: scale(1.2); }
+
+        /* Results */
+        .result-total {
+            text-align: center;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+        }
+        .big-price {
+            font-size: 2.5rem;
+            color: var(--success);
+            font-weight: 800;
+            display: block;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .result-row:last-child { border-bottom: none; }
+        
+        .item-name { font-weight: 600; font-size: 1.1rem; }
+        .item-sub { font-size: 0.85rem; color: var(--text-muted); display: block;}
+        .item-price { font-weight: 700; color: var(--success); }
+
+        /* Accordion */
+        .accordion-header {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 5px 0;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            margin-bottom: 5px;
+        }
+        .editable-area {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+            border: 1px dashed var(--border);
+        }
+
+        /* Ads */
+        .ad-slot {
+            width: 100%;
+            background-color: #0f172a;
+            border: 1px dashed #475569;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* SEO Content Section */
+        .seo-content {
+            margin-top: 40px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            color: var(--text-muted);
+        }
+        .seo-content h3 { color: var(--text-main); font-size: 1.1rem; margin-top: 20px; }
+        .seo-content p { font-size: 0.9rem; }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 40px;
+            padding-bottom: 20px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="max-width: 600px; margin: 0 auto 20px auto;">
+        <div class="ad-slot" style="height: 100px;">
+            TOP BANNER AD (320x100)
+        </div>
+    </div>
+
+<div class="container">
+    <h1>🥂 Drink Plan Calc</h1>
+
+    <div class="card">
+        <h2>The Basics</h2>
+        
+        <div class="grid-2 mb-4">
+            <div>
+                <label>Total Guests</label>
+                <input type="number" id="guestInput" value="50" min="1">
+            </div>
+            <div>
+                <label>Non-Drinkers (%)</label>
+                <input type="number" id="nonDrinkerInput" value="10" min="0" max="100">
+            </div>
+        </div>
+        <div class="text-center mb-4 text-small" style="color: var(--success);">
+            🎉 Planning for <span id="actualDrinkers" style="font-weight:bold; color:#fff">45</span> Drinkers
+        </div>
+        
+        <div class="mb-4">
+            <label>Duration: <span id="durationVal" style="color:var(--text-main)">4</span> Hours</label>
+            <input type="range" id="durationInput" min="1" max="8" value="4">
+        </div>
+
+        <label>The Vibe</label>
+        <div class="toggle-group" id="vibeGroup">
+            <button class="toggle-btn" onclick="setVibe('chill')">Chill</button>
+            <button class="toggle-btn active" onclick="setVibe('standard')">Standard</button>
+            <button class="toggle-btn" onclick="setVibe('rager')">Rager</button>
+        </div>
+        
+        <details>
+            <summary class="accordion-header">Edit Consumption Rates</summary>
+            <div class="editable-area grid-2">
+                <div><label>1st Hour Drinks</label><input type="number" id="vibeBase" value="2" step="0.5"></div>
+                <div><label>Hourly After</label><input type="number" id="vibeHourly" value="1" step="0.5"></div>
+            </div>
+        </details>
+
+        <div style="margin-top: 20px;"></div>
+
+        <label>The Crowd</label>
+        <div class="toggle-group" id="crowdGroup" style="grid-template-columns: repeat(4, 1fr);">
+            <button class="toggle-btn" onclick="setCrowd('beer')">Beer++</button>
+            <button class="toggle-btn active" onclick="setCrowd('balanced')">Balanced</button>
+            <button class="toggle-btn" onclick="setCrowd('wine')">Wine++</button>
+            <button class="toggle-btn" onclick="setCrowd('cocktail')">Spirit++</button>
+        </div>
+
+        <details>
+            <summary class="accordion-header">Edit % Ratios</summary>
+            <div class="editable-area" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+                <div><label>Beer %</label><input type="number" id="ratioBeer" value="40"></div>
+                <div><label>Wine %</label><input type="number" id="ratioWine" value="30"></div>
+                <div><label>Spirit %</label><input type="number" id="ratioSpirit" value="30"></div>
+            </div>
+        </details>
+    </div>
+
+    <div class="card">
+        <h2>Liquor Cabinet</h2>
+        <p class="text-small mb-2">Check what you are serving:</p>
+        <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="checkbox" class="liquor-check" value="vodka" checked> Vodka</label>
+            <label class="checkbox-item"><input type="checkbox" class="liquor-check" value="tequila" checked> Tequila</label>
+            <label class="checkbox-item"><input type="checkbox" class="liquor-check" value="whiskey"> Whiskey</label>
+            <label class="checkbox-item"><input type="checkbox" class="liquor-check" value="rum"> Rum</label>
+            <label class="checkbox-item"><input type="checkbox" class="liquor-check" value="gin"> Gin</label>
+            <label class="checkbox-item"><input type="checkbox" class="liquor-check" value="jaeger"> Jägermeister</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <details>
+            <summary class="accordion-header" style="font-size:1rem; font-weight:bold;">⚙️ Edit Budget (Unit Prices)</summary>
+            <div class="editable-area" style="margin-top:10px">
+                <div class="grid-2">
+                    <div><label>Beer Case (12pk)</label><input type="number" id="priceBeer" value="20"></div>
+                    <div><label>Wine Bottle</label><input type="number" id="priceWine" value="15"></div>
+                    <div><label>Vodka Bottle</label><input type="number" id="priceVodka" value="20"></div>
+                    <div><label>Tequila Bottle</label><input type="number" id="priceTequila" value="30"></div>
+                    <div><label>Whiskey Bottle</label><input type="number" id="priceWhiskey" value="35"></div>
+                    <div><label>Rum Bottle</label><input type="number" id="priceRum" value="20"></div>
+                    <div><label>Gin Bottle</label><input type="number" id="priceGin" value="25"></div>
+                    <div><label>Jaeger Bottle</label><input type="number" id="priceJaeger" value="25"></div>
+                    <div><label>Mixer (2L)</label><input type="number" id="priceMixer" value="3"></div>
+                    <div><label>Ice (10lb Bag)</label><input type="number" id="priceIce" value="5"></div>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <div class="ad-slot" style="height: 250px; margin-bottom: 20px; background-color: #1e293b;">
+        MIDDLE AD (RECTANGLE)
+    </div>
+
+    <div class="card result-total">
+        <h2>Total Estimated Cost</h2>
+        <span class="big-price" id="totalCost">$0</span>
+        <p style="margin:0; font-size:0.9rem;">Approx. <span id="totalDrinks">0</span> Drinks Total</p>
+    </div>
+
+    <div class="card" id="shoppingList">
+        </div>
+
+    <div class="seo-content">
+        <h3>Common Questions</h3>
+        <p><strong>How much alcohol do I need for 100 guests?</strong><br>
+        For a 4-hour wedding reception with 100 guests, the standard rule is 400 drinks total. This usually breaks down to 40% Beer, 30% Wine, and 30% Spirits.</p>
+        
+        <p><strong>What is the 50/50 Rule?</strong><br>
+        Most caterers estimate that 50% of guests will drink wine/beer and 50% will drink mixed cocktails. Use our "Balanced" setting to calculate this accurately.</p>
+
+        <p><strong>How much ice do I need?</strong><br>
+        The golden rule for parties is 1 lb (0.5kg) of ice per guest. This covers ice for drinks and ice for keeping bottles cold in coolers.</p>
+    </div>
+
+    <footer>
+        <p>⚠️ For planning purposes only. Please drink responsibly. Don't drink and drive.</p>
+        <p>&copy; 2024 DrinkPlanCalc.com</p>
+    </footer>
+</div>
+
+<script>
+    const vibePresets = {
+        chill: { base: 1.5, hourly: 0.5 },
+        standard: { base: 2, hourly: 1 },
+        rager: { base: 2.5, hourly: 1.5 }
+    };
+    const crowdPresets = {
+        balanced: { beer: 40, wine: 30, spirit: 30 },
+        beer: { beer: 70, wine: 10, spirit: 20 },
+        wine: { beer: 10, wine: 70, spirit: 20 },
+        cocktail: { beer: 10, wine: 10, spirit: 80 }
+    };
+
+    const inputs = {
+        guests: document.getElementById('guestInput'),
+        nonDrinker: document.getElementById('nonDrinkerInput'),
+        actualDrinkers: document.getElementById('actualDrinkers'),
+        duration: document.getElementById('durationInput'),
+        durationVal: document.getElementById('durationVal'),
+        vibeBase: document.getElementById('vibeBase'),
+        vibeHourly: document.getElementById('vibeHourly'),
+        ratioBeer: document.getElementById('ratioBeer'),
+        ratioWine: document.getElementById('ratioWine'),
+        ratioSpirit: document.getElementById('ratioSpirit'),
+        totalCost: document.getElementById('totalCost'),
+        totalDrinks: document.getElementById('totalDrinks'),
+        shoppingList: document.getElementById('shoppingList')
+    };
+
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', () => {
+            if(input.id === 'durationInput') inputs.durationVal.innerText = input.value;
+            calculate();
+        });
+    });
+
+    document.querySelectorAll('.liquor-check').forEach(box => {
+        box.addEventListener('change', calculate);
+    });
+
+    function setVibe(vibeKey) {
+        document.querySelectorAll('#vibeGroup .toggle-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        inputs.vibeBase.value = vibePresets[vibeKey].base;
+        inputs.vibeHourly.value = vibePresets[vibeKey].hourly;
+        calculate();
+    }
+
+    function setCrowd(crowdKey) {
+        document.querySelectorAll('#crowdGroup .toggle-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        inputs.ratioBeer.value = crowdPresets[crowdKey].beer;
+        inputs.ratioWine.value = crowdPresets[crowdKey].wine;
+        inputs.ratioSpirit.value = crowdPresets[crowdKey].spirit;
+        calculate();
+    }
+
+    function calculate() {
+        const totalGuests = parseInt(inputs.guests.value) || 0;
+        const nonDrinkerPct = parseInt(inputs.nonDrinker.value) || 0;
+        const actualDrinkers = Math.ceil(totalGuests * ((100 - nonDrinkerPct) / 100));
+        inputs.actualDrinkers.innerText = actualDrinkers;
+
+        const duration = parseInt(inputs.duration.value);
+        const baseDrinks = parseFloat(inputs.vibeBase.value) || 0;
+        const hourlyDrinks = parseFloat(inputs.vibeHourly.value) || 0;
+        const hoursAfterFirst = Math.max(0, duration - 1);
+        const drinksPerPerson = baseDrinks + (hoursAfterFirst * hourlyDrinks);
+        const totalDrinks = Math.ceil(actualDrinkers * drinksPerPerson);
+
+        let rBeer = parseFloat(inputs.ratioBeer.value) || 0;
+        let rWine = parseFloat(inputs.ratioWine.value) || 0;
+        let rSpirit = parseFloat(inputs.ratioSpirit.value) || 0;
+        const totalRatio = rBeer + rWine + rSpirit;
+        const safeTotal = totalRatio === 0 ? 1 : totalRatio;
+
+        const beerDrinks = Math.ceil(totalDrinks * (rBeer / safeTotal));
+        const wineDrinks = Math.ceil(totalDrinks * (rWine / safeTotal));
+        const spiritDrinks = Math.ceil(totalDrinks * (rSpirit / safeTotal));
+
+        let totalCost = 0;
+        let listHTML = '';
+
+        // Beer
+        const beerPrice = parseFloat(document.getElementById('priceBeer').value) || 0;
+        const beerCases = Math.ceil(beerDrinks / 12);
+        const beerCost = beerCases * beerPrice;
+        if (beerDrinks > 0) {
+            totalCost += beerCost;
+            listHTML += createRow('Beer', `${beerDrinks} Cans`, `${beerCases} Cases (12pk)`, beerCost);
+        }
+
+        // Wine
+        const winePrice = parseFloat(document.getElementById('priceWine').value) || 0;
+        const wineBottles = Math.ceil(wineDrinks / 5);
+        const wineCost = wineBottles * winePrice;
+        if (wineDrinks > 0) {
+            totalCost += wineCost;
+            listHTML += createRow('Wine', `${wineBottles} Bottles`, 'Standard 750ml', wineCost);
+        }
+
+        // Spirits
+        const selectedLiquors = Array.from(document.querySelectorAll('.liquor-check:checked')).map(cb => cb.value);
+        if (spiritDrinks > 0 && selectedLiquors.length > 0) {
+            const totalSpiritBottles = Math.max(1, Math.ceil(spiritDrinks / 16)); 
+            const bottlesPerType = Math.ceil(totalSpiritBottles / selectedLiquors.length); 
+            
+            let spiritsCost = 0;
+            let spiritsDetail = "";
+
+            selectedLiquors.forEach(type => {
+                const priceId = 'price' + type.charAt(0).toUpperCase() + type.slice(1);
+                const price = parseFloat(document.getElementById(priceId).value) || 0;
+                const cost = bottlesPerType * price;
+                spiritsCost += cost;
+                spiritsDetail += `${bottlesPerType} ${type.charAt(0).toUpperCase() + type.slice(1)}, `;
+            });
+            spiritsDetail = spiritsDetail.slice(0, -2);
+            totalCost += spiritsCost;
+            listHTML += createRow('Liquor', `${totalSpiritBottles} Bottles Total`, spiritsDetail, spiritsCost);
+
+            const mixerPrice = parseFloat(document.getElementById('priceMixer').value) || 0;
+            const mixerLiters = totalSpiritBottles * 2; 
+            const mixerCost = Math.ceil(mixerLiters / 2) * mixerPrice; 
+            totalCost += mixerCost;
+            listHTML += createRow('Mixers', `${Math.ceil(mixerLiters)} Liters`, 'Soda, Juice, Tonic', mixerCost);
+        } else if (spiritDrinks > 0) {
+             listHTML += `<div class="result-row"><span class="item-name" style="color:#ef4444">Select a liquor type above!</span></div>`;
+        }
+
+        // Ice
+        const icePrice = parseFloat(document.getElementById('priceIce').value) || 0;
+        const iceLbs = totalGuests * 1; 
+        const iceBags = Math.ceil(iceLbs / 10); 
+        const iceCost = iceBags * icePrice;
+        totalCost += iceCost;
+        listHTML += createRow('Ice', `${iceLbs} lbs`, `${iceBags} Bags (10lb)`, iceCost);
+
+        inputs.totalCost.innerText = '$' + totalCost.toLocaleString();
+        inputs.totalDrinks.innerText = totalDrinks;
+        inputs.shoppingList.innerHTML = listHTML;
+    }
+
+    function createRow(title, qty, sub, cost) {
+        return `<div class="result-row"><div><span class="item-name">${title}</span><span class="item-sub">${qty} • ${sub}</span></div><span class="item-price">$${cost}</span></div>`;
+    }
+
+    calculate();
+</script>
+</body>
+</html>
